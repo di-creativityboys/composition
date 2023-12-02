@@ -24,6 +24,7 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
+      - LLM_WEBSOCKET_URL=ws://asdufsfd.dynv6.net:5000
     
 
   data-app:
@@ -39,20 +40,20 @@ services:
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
 
-  pgadmin:
-    image: dpage/pgadmin4:7.7
-    restart: unless-stopped
-    depends_on:
-      - db
-    logging:
-      driver: "none"
-    ports:
-      - "9000:9000"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "postgres@local.com"
-      PGADMIN_DEFAULT_PASSWORD: "postgres"
-      PGADMIN_LISTEN_PORT: 9000
-      GUNICORN_ACCESS_LOGFILE: '/tmp/logs'
+  # pgadmin:
+  #   image: dpage/pgadmin4:7.7
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - db
+  #   logging:
+  #     driver: "none"
+  #   ports:
+  #     - "9000:9000"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: "postgres@local.com"
+  #     PGADMIN_DEFAULT_PASSWORD: "postgres"
+  #     PGADMIN_LISTEN_PORT: 9000
+  #     GUNICORN_ACCESS_LOGFILE: '/tmp/logs'
 
 
 volumes:
