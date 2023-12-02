@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+
+
+  webserver:
+    build:
+      context: ../webserver/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+      - data-app
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
+    
+
+  data-app:
+    build:
+      context: ../data-app/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+
+  pgadmin:
+    image: dpage/pgadmin4:7.7
+    restart: unless-stopped
+    depends_on:
+      - db
+    logging:
+      driver: "none"
+    ports:
+      - "9000:9000"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "postgres@local.com"
+      PGADMIN_DEFAULT_PASSWORD: "postgres"
+      PGADMIN_LISTEN_PORT: 9000
+      GUNICORN_ACCESS_LOGFILE: '/tmp/logs'
+
+
+volumes:
+  postgres-data:
